@@ -138,7 +138,7 @@ module ActiveRecord
         end
 
         def user_options
-          return {} if sqlserver_azure?
+          return {} if sqlserver_azure? || azure_warehouse?
           rows = select_rows('DBCC USEROPTIONS WITH NO_INFOMSGS', 'SCHEMA')
           rows = rows.first if rows.size == 2 && rows.last.empty?
           rows.reduce(HashWithIndifferentAccess.new) do |values, row|

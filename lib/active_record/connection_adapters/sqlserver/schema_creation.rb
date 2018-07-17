@@ -25,9 +25,9 @@ module ActiveRecord
           if options[:is_identity] == true
             sql << " IDENTITY(1,1)"
           end
-          if options[:primary_key] == true
-            sql << " PRIMARY KEY"
-          end
+          # if options[:primary_key] == true
+          #   sql << " PRIMARY KEY"
+          # end
           sql
         end
 

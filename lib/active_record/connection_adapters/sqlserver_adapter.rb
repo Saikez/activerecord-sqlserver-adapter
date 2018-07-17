@@ -211,8 +211,20 @@ module ActiveRecord
         true
       end
 
+      def select_value(arg1, arg2)
+        if azure_warehouse?
+          super(arg1, arg2).first
+        else
+          super(arg1, arg2)
+        end
+      end
+
       def sqlserver_azure?
         @sqlserver_azure ||= !!(select_value('SELECT @@version', 'SCHEMA') =~ /Azure/i)
+      end
+
+      def azure_warehouse?
+        @connection_options[:azure_warehouse]
       end
 
       def database_prefix_remote_server?
@@ -393,7 +405,7 @@ module ActiveRecord
             client.execute('SET ANSI_DEFAULTS ON').do
           end
           client.execute('SET QUOTED_IDENTIFIER ON').do
-          client.execute('SET CURSOR_CLOSE_ON_COMMIT OFF').do
+          client.execute('SET CURSOR_CLOSE_ON_COMMIT OFF').do unless azure_warehouse?
           client.execute('SET IMPLICIT_TRANSACTIONS OFF').do
           client.execute('SET TEXTSIZE 2147483647').do
           client.execute('SET CONCAT_NULL_YIELDS_NULL ON').do
